@@ -10,7 +10,7 @@ including the room, which draws itself. Svelte components are optional and
 live behind their own entry point, so a plain-JS host never pays for them.
 
 ```
-anamorphic/
+anamorphic.js/
   index.ts          core API — framework-free
   engine.ts         measurement, projection, the rAF loop
   room.ts           builds the box as plain DOM
@@ -21,7 +21,10 @@ anamorphic/
   demo/             the showcase — vanilla, no framework
 ```
 
-## Run the demo
+## The demo
+
+**[sendar0.github.io/anamorphic.js](https://sendar0.github.io/anamorphic.js/)** — needs
+a camera and a moment's patience while the face mesh loads. Or run it yourself:
 
 ```sh
 npm install
@@ -30,6 +33,13 @@ npm run dev        # http://localhost:5180
 
 The demo is the documentation you can lean at. It uses nothing but the core
 API, which is the point: if it works, the library stands on its own.
+
+### In the wild
+
+**[sander.ame.link](https://sander.ame.link)** runs it on an ordinary site
+rather than a showcase — click *Now in 3d!*. That is the more honest test of
+the two: real content, laid out for reading first, with the planes added
+afterwards.
 
 ## Quick start
 
@@ -85,7 +95,7 @@ so a bundler is assumed (any of vite, esbuild, webpack, rollup). Either copy
 the folder into your project, or point at the repo:
 
 ```sh
-npm install github:sanderamelink/anamorphic
+npm install github:sendar0/anamorphic.js
 ```
 
 ## How it works
@@ -251,6 +261,14 @@ rather than a fork.
   gentler version rather than nothing.
 - **Camera modes need a real face in reasonable light.** The blob tracker is
   a fallback, not a peer: no yaw, and it will chase anything skin-coloured.
+
+## Also mine
+
+**[Temporal.ist](https://temporal.ist)** — the timesheet that writes itself.
+It notices when you save your work and builds the hours for you: no timers to
+start, no Friday afternoon spent reconstructing the week, and no screenshots
+or keystrokes leaving your machine. Accurate hours, ready to invoice, for
+freelancers and agencies who make digital work.
 
 ## Licence
 

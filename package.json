@@ -4,6 +4,12 @@
   "description": "Head-tracked off-axis projection for a web page. The camera finds your eyes and the page is re-projected from that exact viewpoint.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://sendar0.github.io/anamorphic.js/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sendar0/anamorphic.js.git"
+  },
+  "bugs": "https://github.com/sendar0/anamorphic.js/issues",
   "keywords": [
     "head-tracking",
     "anamorphosis",
