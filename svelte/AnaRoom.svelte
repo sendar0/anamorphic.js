@@ -2,7 +2,7 @@
 	/* A thin wrapper around ../room.ts, which builds the room as plain DOM.
 	   Everything it draws is styled by anamorphic.css under `.ana-*`, so there is
 	   nothing framework-shaped left in here — mount it and forget it. */
-	import { mountRoom, type RoomOptions } from '../room';
+	import { mountRoom, type RoomOptions } from 'anamorphic';
 
 	let { motes = 26, glass = true, escapeToExit = true }: Omit<RoomOptions, 'target'> = $props();
 

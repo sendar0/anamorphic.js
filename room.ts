@@ -9,8 +9,8 @@
    room. The styles live in anamorphic.css under `.ana-*`; ../svelte/AnaRoom is
    a thin wrapper around this. */
 
-import { CMD } from './copy';
-import { anaActive, anaVisible, say, stopAnamorphic } from './engine';
+import { CMD } from './copy.js';
+import { anaActive, anaVisible, say, stopAnamorphic } from './engine.js';
 
 export type RoomOptions = {
 	/** where to append the room; defaults to <body> */

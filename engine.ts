@@ -27,8 +27,8 @@
    from one measurement, so they agree.
    ────────────────────────────────────────────────────────────────────────── */
 
-import { CMD } from './copy';
-import { derived, writable } from './store';
+import { CMD } from './copy.js';
+import { derived, writable } from './store.js';
 
 /** No bundler magic, no framework import: just whether there is a DOM. */
 const browser = typeof window !== 'undefined' && typeof document !== 'undefined';

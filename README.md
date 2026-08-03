@@ -90,9 +90,18 @@ Three things are load-bearing:
 
 ### Installing
 
-There is no build step and no bundle: the package ships TypeScript source,
-so a bundler is assumed (any of vite, esbuild, webpack, rollup). Either copy
-the folder into your project, or point at the repo:
+```sh
+npm install anamorphic
+```
+
+The core ships as compiled ESM with type declarations — plain `node` can
+import it, and it needs no bundler and no transpile step. The Svelte
+components ship as `.svelte` source, which is the convention: anyone reaching
+for them already has a Svelte toolchain. They import the package by name, so
+they resolve to the same modules the core entry does — one engine, one set of
+stores, however you came in.
+
+Or point at the repo, which builds `lib/` on install from the git tag:
 
 ```sh
 npm install github:sendar0/anamorphic.js

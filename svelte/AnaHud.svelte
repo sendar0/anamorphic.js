@@ -2,8 +2,8 @@
 	/* The instrument panel: what the tracker sees, and the knobs for it.
 	   Everything here is also reachable from the terminal — this is for
 	   people who want to watch the thing work. `3d hud` toggles it. */
-	import { CMD } from '../copy';
 	import {
+		CMD,
 		anaAspect,
 		anaDetector,
 		anaGain,
@@ -21,7 +21,7 @@
 		startPointer,
 		stopAnamorphic,
 		toggleMirror
-	} from '../engine';
+	} from 'anamorphic';
 
 	let canvas = $state<HTMLCanvasElement | null>(null);
 

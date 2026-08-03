@@ -20,11 +20,22 @@
     "svelte"
   ],
   "sideEffects": ["*.css"],
-  "files": ["*.ts", "*.css", "svelte", "README.md", "LICENSE"],
+  "files": ["lib", "svelte", "anamorphic.css", "README.md", "LICENSE"],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
-    ".": "./index.ts",
-    "./room": "./room.ts",
-    "./svelte": "./svelte/index.ts",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./room": {
+      "types": "./lib/room.d.ts",
+      "default": "./lib/room.js"
+    },
+    "./svelte": {
+      "svelte": "./svelte/index.js",
+      "default": "./svelte/index.js"
+    },
     "./anamorphic.css": "./anamorphic.css",
     "./package.json": "./package.json"
   },
@@ -42,7 +53,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:lib": "tsc -p tsconfig.build.json",
     "preview": "vite preview",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "clean": "rm -rf lib dist",
+    "prepare": "npm run build:lib",
+    "prepublishOnly": "npm run check"
   }
 }

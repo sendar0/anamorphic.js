@@ -38,14 +38,14 @@ export {
 	anaReadout,
 	anaAspect,
 	anaLog
-} from './engine';
+} from './engine.js';
 
-export type { AnaMode, AnaOptions, LogTone, Plane } from './engine';
+export type { AnaMode, AnaOptions, LogTone, Plane } from './engine.js';
 
-export { writable, derived } from './store';
-export type { Readable, Writable, Subscriber, Unsubscriber } from './store';
+export { writable, derived } from './store.js';
+export type { Readable, Writable, Subscriber, Unsubscriber } from './store.js';
 
-export { CMD, INTRO, INTRO_HEAD, START_LABEL, USAGE, wrap } from './copy';
+export { CMD, INTRO, INTRO_HEAD, START_LABEL, USAGE, wrap } from './copy.js';
 
-export { mountRoom } from './room';
-export type { RoomOptions, RoomHandle } from './room';
+export { mountRoom } from './room.js';
+export type { RoomOptions, RoomHandle } from './room.js';

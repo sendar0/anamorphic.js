@@ -3,8 +3,11 @@
 	   a modal that says exactly what the terminal says before anyone is
 	   asked for a camera. */
 	import { tick } from 'svelte';
-	import { CMD, INTRO, INTRO_HEAD, START_LABEL } from '../copy';
 	import {
+		CMD,
+		INTRO,
+		INTRO_HEAD,
+		START_LABEL,
 		cameraProblem,
 		anaActive,
 		anaLog,
@@ -16,7 +19,7 @@
 		startCamera,
 		startPointer,
 		startTilt
-	} from '../engine';
+	} from 'anamorphic';
 
 	/** Where the long explanation lives, if the host has such a page. */
 	let { docsHref = '' }: { docsHref?: string } = $props();

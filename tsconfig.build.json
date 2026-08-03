@@ -1,0 +1,22 @@
+/* What `npm run build:lib` uses. The dev tsconfig is a checker — noEmit,
+   the demo included. This one is the publisher: the five core modules only,
+   emitted as ESM plus declarations into lib/.
+
+   The Svelte components are not compiled here. tsc cannot read .svelte, and
+   there would be nothing to gain: anyone importing anamorphic/svelte has a
+   Svelte toolchain by definition, so those ship as source. They import the
+   package by name rather than by relative path, so they resolve to the same
+   lib/ modules the core entry does — two copies of the engine would mean two
+   sets of stores, and the panel would be watching a tracker nobody started. */
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"outDir": "lib",
+		"declaration": true,
+		"sourceMap": true,
+		"inlineSources": true,
+		"removeComments": false
+	},
+	"include": ["index.ts", "engine.ts", "room.ts", "store.ts", "copy.ts"]
+}
