@@ -290,21 +290,26 @@ button:focus-visible {
 /* The stroke is deliberately allowed to smear with the shape — in a real
    anamorphosis the paint stretches too, it is not a shape with a clean
    outline drawn over it. */
-/* The pre-distortion is the inverse of what the drawing's own plane does to
-   it when seen from off to the side, so the wedge runs the opposite way to
-   the view: the resolving eye is off to the left, the left end of the mark
-   is the end nearest it, and near things already look big — so that is the
-   end that has to be painted small. Hence the negative angle. Rotate through
-   it, project through a short perspective, then scale the width back up by
-   1/cos so the mark ends up long rather than merely squashed. At --sk-d: 0
-   the angle is zero and the whole chain collapses to the identity. */
+/* Shaped after the smear at the foot of The Ambassadors, read right to left
+   below — every term scaled by --sk-d, so at 0 the whole chain collapses to
+   the identity and the drawing is simply a skull:
+
+     rotate(90deg)   lay the skull on its side, crown pointing along the mark
+     rotateY         swing it away from the resolving eye; through the short
+                     perspective that follows, this is what tapers the near
+                     end and leaves the far end wide. The eye is off to the
+                     left, so the left end is the near one — and near things
+                     already look big, so that is the end painted small
+     scale           stretch along the crown-to-chin axis and pinch it thin;
+                     the 1/cos undoes the projection's own foreshortening, so
+                     the mark ends up long rather than merely squashed
+     rotate(-22deg)  tilt the finished spindle up towards the right */
 .skull-warp {
 	--sk-a: calc(var(--sk-d) * -58deg);
-	transform: translate(calc(var(--sk-d) * -4%), calc(var(--sk-d) * 3%))
-		rotate(calc(var(--sk-d) * 7deg))
-		scale(calc((1 + var(--sk-d) * 2.9) / cos(var(--sk-a))), calc(1 - var(--sk-d) * 0.54))
-		perspective(260px) rotateY(var(--sk-a));
-	transform-origin: 50% 76%;
+	transform: translate(0, calc(var(--sk-d) * 7%)) rotate(calc(var(--sk-d) * -20deg))
+		scale(calc((1 + var(--sk-d) * 2) / cos(var(--sk-a))), calc(1 - var(--sk-d) * 0.7))
+		perspective(260px) rotateY(var(--sk-a)) rotate(calc(var(--sk-d) * 90deg));
+	transform-origin: 50% 50%;
 	opacity: calc(0.34 + (1 - min(var(--sk-d), 1)) * 0.66);
 	will-change: transform;
 }
