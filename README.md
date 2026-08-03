@@ -1,5 +1,8 @@
 # anamorphic
 
+[![npm](https://img.shields.io/npm/v/anamorphic)](https://www.npmjs.com/package/anamorphic)
+[![no dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)](package.json)
+
 Head-tracked off-axis projection for a web page. The camera finds your eyes,
 works out where they are in millimetres relative to the middle of the screen,
 and re-projects the page from that exact viewpoint — plus a gridded room
@@ -42,6 +45,10 @@ the two: real content, laid out for reading first, with the planes added
 afterwards.
 
 ## Quick start
+
+```sh
+npm install anamorphic
+```
 
 Anywhere, with no framework:
 
@@ -88,11 +95,7 @@ Three things are load-bearing:
 3. **Put things on planes.** Either the `data-ana-plane` attribute, or
    `transform: var(--ana-t-fore)` in your own CSS — see *Planes* below.
 
-### Installing
-
-```sh
-npm install anamorphic
-```
+### What you get from `npm install anamorphic`
 
 The core ships as compiled ESM with type declarations — plain `node` can
 import it, and it needs no bundler and no transpile step. The Svelte

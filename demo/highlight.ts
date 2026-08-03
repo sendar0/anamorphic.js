@@ -27,6 +27,13 @@ const LANGS: Record<string, Rule[]> = {
 		['str', /"[^"\n]*"|'[^'\n]*'/y],
 		['op', /=/y]
 	],
+	sh: [
+		['com', /#[^\n]*/y],
+		['str', /'[^'\n]*'|"[^"\n]*"/y],
+		['fn', /\b(?:npm|npx|pnpm|yarn|bun|git|cd)\b/y],
+		['attr', /--?[\w-]+/y],
+		['punc', /[|&;<>()]/y]
+	],
 	css: [
 		['com', /\/\*[\s\S]*?\*\//y],
 		['str', /'[^'\n]*'|"[^"\n]*"/y],

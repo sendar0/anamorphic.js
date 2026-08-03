@@ -14,7 +14,12 @@
 		<!-- the room is painted behind this; everything on the page sits above it -->
 		<main data-ana-page>
 			<header class="hero">
-				<p class="eyebrow">anamorphic — a small library</p>
+				<div class="topline">
+					<p class="eyebrow">anamorphic — a small library</p>
+					<a class="source" href="https://github.com/sendar0/anamorphic.js">
+						source on github ↗
+					</a>
+				</div>
 				<h1 data-ana-plane="fore">Look into the page.</h1>
 				<p class="lede" data-ana-plane="mid">
 					The webcam finds your face, works out how far left, right, up and away from the
@@ -180,6 +185,15 @@ s = P / (P - z)              projection of a plane at depth z
 
 			<section>
 				<h2>Use it</h2>
+
+				<h3>Install</h3>
+				<pre class="code" data-lang="sh">
+npm install anamorphic</pre
+				>
+				<p class="prose small">
+					Compiled ESM with type declarations — no bundler required, nothing to transpile.
+					The Svelte components ship as source, for hosts that already compile Svelte.
+				</p>
 
 				<h3>Anywhere — no framework</h3>
 				<pre class="code" data-lang="js">
