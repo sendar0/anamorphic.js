@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>anamorphic — head-tracked perspective for the web</title>
+		<meta
+			name="description"
+			content="A dependency-free library that re-projects a web page from wherever the viewer's eyes actually are, using the webcam."
+		/>
+		<link rel="stylesheet" href="./demo.css" />
+	</head>
+	<body>
+		<!-- the room is painted behind this; everything on the page sits above it -->
+		<main data-ana-page>
+			<header class="hero">
+				<p class="eyebrow">anamorphic — a small library</p>
+				<h1 data-ana-plane="fore">Look into the page.</h1>
+				<p class="lede" data-ana-plane="mid">
+					The webcam finds your face, works out how far left, right, up and away from the
+					screen you are sitting, and re-projects every layer of this page — and the room
+					it is standing in — from that exact viewpoint. Lean, and you see around the
+					inside corners of the box. Nothing is uploaded; it all runs in this tab.
+				</p>
+
+				<p class="wild">
+					See it in action on a real website. Visit
+					<a href="https://sander.ame.link">sander.ame.link</a> and click the
+					<b>Now in 3d!</b>
+				</p>
+
+				<section class="panel" aria-label="controls">
+					<div class="panel-head">
+						<span>try it</span>
+						<span class="state" id="state">off</span>
+					</div>
+					<div class="panel-body">
+						<div class="row" id="controls">
+							<button id="camera" class="go">track my head</button>
+							<button id="pointer">use the pointer</button>
+							<button id="tilt" hidden>use device tilt</button>
+							<button id="recenter" disabled>recenter</button>
+							<button id="off" disabled>off</button>
+						</div>
+
+						<label class="gain">
+							<span>strength — <b id="gain-value">1.00</b>×</span>
+							<input id="gain" type="range" min="0.3" max="2.4" step="0.05" value="1" />
+						</label>
+
+						<div class="live">
+							<canvas id="preview" width="160" height="120" hidden></canvas>
+							<p class="readout" id="readout">
+								detector <b>none</b> · eye <b>+0mm</b>, <b>+0mm</b> · <b>60cm</b> away
+							</p>
+						</div>
+						<p class="problem" id="problem" hidden></p>
+					</div>
+				</section>
+			</header>
+
+			<section>
+				<h2>The skull</h2>
+				<p class="prose">
+					Holbein hid one at the foot of
+					<a href="https://en.wikipedia.org/wiki/The_Ambassadors_(Holbein)"
+						><em>The Ambassadors</em></a
+					>
+					in 1533: a grey smear
+					that means nothing from in front of the painting, and stands up as a skull the
+					moment you step off to the side. That is anamorphosis — a picture drawn correct
+					for one viewpoint and wrong from everywhere else — and it is what this library
+					is named after.
+				</p>
+				<p class="prose">
+					This one is wired to the tracker. It carries the inverse of the squeeze you would
+					see from about 17&nbsp;cm to the left of centre, so it is a smear until your eye
+					arrives there. Start the camera and lean left, or drive it with the pointer.
+				</p>
+
+				<figure class="skull" id="skull-figure" data-ana-plane="fore">
+					<div class="skull-frame">
+						<div class="skull-warp">
+							<svg viewBox="0 0 200 230" aria-hidden="true">
+								<!-- cranium, cheekbones and jaw as one silhouette -->
+								<path
+									class="sk-bone"
+									d="M100 8c45 0 76 33 76 80 0 24-6 42-18 56-6 7-11 12-14 20l-2 14c-1 21-16 34-42 34s-41-13-42-34l-2-14c-3-8-8-13-14-20C30 130 24 112 24 88 24 41 55 8 100 8Z"
+								/>
+								<g class="sk-hollow">
+									<ellipse cx="70" cy="96" rx="25" ry="26" transform="rotate(-9 70 96)" />
+									<ellipse cx="130" cy="96" rx="25" ry="26" transform="rotate(9 130 96)" />
+									<path d="M100 124l15 30c-5 6-25 6-30 0l15-30Z" />
+								</g>
+								<g class="sk-line">
+									<!-- the tooth row -->
+									<path d="M62 178h76" />
+									<path d="M100 178v22M81 178v21M119 178v21M67 178v15M133 178v15" />
+									<!-- zygomatic arches -->
+									<path d="M38 128c9 9 18 14 30 17M162 128c-9 9-18 14-30 17" />
+								</g>
+							</svg>
+						</div>
+					</div>
+
+					<figcaption>
+						<span class="skull-bar"><i id="skull-meter"></i></span>
+						<span class="skull-hint" id="skull-hint">a smear — lean left</span>
+					</figcaption>
+				</figure>
+			</section>
+
+			<section>
+				<h2>The planes</h2>
+				<p class="prose">
+					Five, back to front. With it running, lean — they slide across each other by an
+					amount set by how far apart they are and how far you moved. Sit square in front
+					of the screen and they line up exactly as laid out.
+				</p>
+
+				<div class="ladder">
+					<div class="plate" data-ana-plane="far">
+						<code>far</code><span class="z">−340px</span
+						><span class="note">signage on the back wall</span>
+					</div>
+					<div class="plate" data-ana-plane="deep">
+						<code>deep</code><span class="z">−210px</span><span class="note">set back</span>
+					</div>
+					<div class="plate" data-ana-plane="mid">
+						<code>mid</code><span class="z">−110px</span
+						><span class="note">just behind the glass</span>
+					</div>
+					<div class="plate" data-ana-plane="fore">
+						<code>fore</code><span class="z">+95px</span
+						><span class="note">in front of it</span>
+					</div>
+					<div class="plate" data-ana-plane="near">
+						<code>near</code><span class="z">+185px</span
+						><span class="note">nearly in the room with you</span>
+					</div>
+				</div>
+				<p class="prose small">
+					Each plate is <code>&lt;div data-ana-plane="…"&gt;</code>. That is the whole
+					markup change.
+				</p>
+			</section>
+
+			<section>
+				<h2>How it works</h2>
+				<div class="two">
+					<div>
+						<p class="prose">
+							A plane at depth <em>z</em>, seen by an eye a distance <em>P</em> in front of
+							the glass, projects as a uniform scale about the point where your line of
+							sight crosses the screen. Content planes are all parallel to the screen, so
+							that projection is <em>exactly</em> a scale plus a translate — no keystoning
+							to fake, nothing that needs real 3D.
+						</p>
+						<p class="prose">
+							The trick that makes it usable on a real page is subtracting the resting
+							projection — what you would see sitting square in front of the screen. What
+							survives is only the differential, which is identical for every element on a
+							plane and zero when your eye is centred. A head-on viewer sees the page
+							pixel-for-pixel as it was laid out; it only moves relative to itself as they
+							lean. Text stays crisp, hit targets stay put, nothing reflows.
+						</p>
+						<p class="prose">
+							The room behind the page is the one part that needs genuine CSS 3D — its
+							walls are rotated — so it gets a real <code>perspective</code> driven by the
+							same measurement. Distance comes from the interpupillary span: the iris
+							landmarks are a known ~63&nbsp;mm apart, so their separation in pixels gives
+							range through a pinhole model.
+						</p>
+					</div>
+					<pre class="code" data-lang="math">
+s = P / (P - z)              projection of a plane at depth z
+Δ = eyeOffsetPx · (1 - s)    what is left after removing the rest pose</pre
+					>
+				</div>
+			</section>
+
+			<section>
+				<h2>Use it</h2>
+
+				<h3>Anywhere — no framework</h3>
+				<pre class="code" data-lang="js">
+import 'anamorphic/anamorphic.css';
+import { mountRoom, startCamera } from 'anamorphic';
+
+mountRoom();                 // draws the box, tears itself down when off
+startCamera();               // asks, loads the mesh, starts tracking</pre
+				>
+
+				<h3>Mark your planes</h3>
+				<pre class="code" data-lang="html">
+&lt;div data-ana-page&gt;
+  &lt;h1 data-ana-plane="fore"&gt;In front&lt;/h1&gt;
+  &lt;p  data-ana-plane="deep"&gt;Behind&lt;/p&gt;
+&lt;/div&gt;</pre
+				>
+
+				<h3>Or from your own stylesheet</h3>
+				<pre class="code" data-lang="css">
+/* the z-index ordering is yours to keep straight if you do it this way */
+.headline &#123; transform: var(--ana-t-fore); position: relative; z-index: 4; &#125;
+.backdrop &#123; transform: var(--ana-t-far);  position: relative; z-index: 1; &#125;</pre
+				>
+
+				<h3>With Svelte, if you have it</h3>
+				<pre class="code" data-lang="js">
+import &#123; AnaRoom, AnaHud, AnaInvite &#125; from 'anamorphic/svelte';</pre
+				>
+
+				<h3>Tune it</h3>
+				<pre class="code" data-lang="js">
+configure(&#123;
+  planes: [&#123; key: 'back', z: -400 &#125;, &#123; key: 'front', z: 120 &#125;],
+  sizeCue: 0.3,     // 0 = parallax only, 1 = true perspective scaling
+  ramp: 190,        // ms to ease in and out
+  modelUrl: '/models/face_landmarker.task',   // self-host the mesh
+  amplitude: (width, calm) =&gt; (calm ? 0.45 : width &lt; 640 ? 0.6 : 1)
+&#125;);</pre
+				>
+
+				<p class="prose">
+					The full reference — every store, every option, the failure modes and the things
+					that bite — is in <code>README.md</code>.
+				</p>
+			</section>
+
+			<section>
+				<h2>What it costs</h2>
+				<ul class="facts">
+					<li>
+						<b>A secure context.</b> Browsers hand out cameras on <code>https://</code> and
+						<code>localhost</code> only.
+					</li>
+					<li>
+						<b>~3&nbsp;MB once</b> for the face mesh, fetched on first start. Point it at
+						your own host to avoid the third parties.
+					</li>
+					<li>
+						<b>One animation frame loop</b> while running, writing custom properties that
+						are transforms — so the work stays on the compositor.
+					</li>
+					<li>
+						<b>No camera, no problem.</b> The cursor or a phone's orientation sensors drive
+						it just as well, and it falls back on its own when a camera is refused.
+					</li>
+					<li><b>Nothing leaves the tab.</b> No frame, no landmark, no measurement.</li>
+				</ul>
+			</section>
+
+			<aside class="plug">
+				<img
+					class="plug-mark"
+					src="./temporalist-logo.webp"
+					alt="Temporal.ist"
+					width="320"
+					height="332"
+					loading="lazy"
+					decoding="async"
+				/>
+				<div class="plug-text">
+					<p class="plug-lead">Liked this? I also make</p>
+					<p class="plug-title">Temporal.ist — the timesheet that writes itself</p>
+					<p>
+						It notices when you save your work and builds the hours for you. No timers to
+						start, no Friday afternoon spent reconstructing the week, and no screenshots or
+						keystrokes leaving your machine. Accurate hours, ready to invoice — for
+						freelancers and agencies who make digital work.
+					</p>
+					<p class="plug-cta">
+						<a href="https://temporal.ist">Track this week automatically →</a>
+					</p>
+				</div>
+			</aside>
+
+			<footer class="foot">
+				<span>anamorphic</span>
+				<span class="sep">·</span>
+				<span>MIT</span>
+				<span class="sep">·</span>
+				<span>no dependencies</span>
+			</footer>
+		</main>
+
+		<script type="module" src="./main.ts"></script>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "name": "anamorphic",
+  "version": "0.1.0",
+  "description": "Head-tracked off-axis projection for a web page. The camera finds your eyes and the page is re-projected from that exact viewpoint.",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "head-tracking",
+    "anamorphosis",
+    "parallax",
+    "perspective",
+    "webcam",
+    "mediapipe",
+    "svelte"
+  ],
+  "sideEffects": ["*.css"],
+  "files": ["*.ts", "*.css", "svelte", "README.md", "LICENSE"],
+  "exports": {
+    ".": "./index.ts",
+    "./room": "./room.ts",
+    "./svelte": "./svelte/index.ts",
+    "./anamorphic.css": "./anamorphic.css",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "svelte": { "optional": true }
+  },
+  "devDependencies": {
+    "svelte": "^5.20.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit"
+  }
+}

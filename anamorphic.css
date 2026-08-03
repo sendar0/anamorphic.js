@@ -1,0 +1,316 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   anamorphic — the library stylesheet.
+
+   Everything here is inert until the engine sets <html data-ana="on">, so
+   a page that never turns it on pays nothing for including it.
+
+   It publishes the per-plane transforms the engine writes into, and one
+   generic way to use them:
+
+       <div data-ana-plane="fore"> … </div>
+
+   Planes, back to front:  far · deep · mid · (flat) · fore · near
+
+   If you would rather not put attributes in your markup, skip the utility
+   block at the bottom and apply `transform: var(--ana-t-fore)` to your own
+   selectors instead — but then you own the z-index ordering too, and it
+   has to match the plane order or near things will paint behind far ones.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+	/* how much of the effect is dialled in — 0 while easing out */
+	--ana-mix: 0;
+
+	/* the room behind the page */
+	--ana-persp: 2200px;
+	--ana-ox: 50%;
+	--ana-oy: 50%;
+	--ana-cz: 0px;
+	--ana-sx: 50%;
+	--ana-sy: 34%;
+	--ana-scroll: 0px;
+	--ana-room: clamp(680px, 92vmin, 1400px);
+	--ana-cell: 64px;
+	/* the room takes its colours from these; override to taste */
+	--ana-wall-near: #0a0e12;
+	--ana-wall-far: #141b23;
+	--ana-wall-back: #1a232d;
+	--ana-line: rgba(124, 240, 163, 0.42);
+	--ana-dust: #e6edf3;
+	--ana-glow: rgba(124, 240, 163, 0.16);
+	--ana-bezel: rgba(0, 0, 0, 0.3);
+	--ana-bezel-edge: rgba(230, 237, 243, 0.09);
+	--ana-sheen: rgba(255, 255, 255, 0.05);
+
+	/* the optional corner invite */
+	--ana-ribbon: clamp(112px, 12vw, 176px);
+
+	/* per-plane projection — written from JS, sane at rest */
+	--ana-far-x: 0px;
+	--ana-far-y: 0px;
+	--ana-far-s: 1;
+	--ana-deep-x: 0px;
+	--ana-deep-y: 0px;
+	--ana-deep-s: 1;
+	--ana-mid-x: 0px;
+	--ana-mid-y: 0px;
+	--ana-mid-s: 1;
+	--ana-fore-x: 0px;
+	--ana-fore-y: 0px;
+	--ana-fore-s: 1;
+	--ana-near-x: 0px;
+	--ana-near-y: 0px;
+	--ana-near-s: 1;
+
+	--ana-t-far: translate3d(var(--ana-far-x), var(--ana-far-y), 0) scale(var(--ana-far-s));
+	--ana-t-deep: translate3d(var(--ana-deep-x), var(--ana-deep-y), 0) scale(var(--ana-deep-s));
+	--ana-t-mid: translate3d(var(--ana-mid-x), var(--ana-mid-y), 0) scale(var(--ana-mid-s));
+	--ana-t-fore: translate3d(var(--ana-fore-x), var(--ana-fore-y), 0) scale(var(--ana-fore-s));
+	--ana-t-near: translate3d(var(--ana-near-x), var(--ana-near-y), 0) scale(var(--ana-near-s));
+}
+
+/* ── the generic way to put something on a plane ──────────────────────── */
+
+/* Planes are 2D translations, so nothing sorts them for us. The z-index is
+   what makes a near neighbour pass in front of a far one when the two slide
+   across each other, and it has to match the plane order exactly. Note that
+   z-index only orders siblings within a stacking context: two elements on
+   different planes that can overlap should share a parent. */
+
+[data-ana='on'] [data-ana-plane] {
+	position: relative;
+	will-change: transform;
+}
+
+[data-ana='on'] [data-ana-plane='far'] {
+	transform: var(--ana-t-far);
+	z-index: 1;
+}
+[data-ana='on'] [data-ana-plane='deep'] {
+	transform: var(--ana-t-deep);
+	z-index: 2;
+}
+[data-ana='on'] [data-ana-plane='mid'] {
+	transform: var(--ana-t-mid);
+	z-index: 3;
+}
+[data-ana='on'] [data-ana-plane='fore'] {
+	transform: var(--ana-t-fore);
+	z-index: 4;
+}
+[data-ana='on'] [data-ana-plane='near'] {
+	transform: var(--ana-t-near);
+	z-index: 5;
+}
+
+/* The room is painted at z-index 0, fixed to the viewport. Whatever holds
+   your page has to sit above it and below the glass. */
+[data-ana='on'] [data-ana-page] {
+	position: relative;
+	z-index: 1;
+}
+
+
+/* ── the room ─────────────────────────────────────────────────────────── */
+
+/* Drawn by room.ts (or ./svelte/AnaRoom, which wraps it). Painted at
+   z-index 0 behind the page; the glass is welded to the screen above it. */
+
+.ana-stage {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+	background: var(--ana-wall-near);
+	opacity: var(--ana-mix);
+	perspective: var(--ana-persp);
+	perspective-origin: var(--ana-ox) var(--ana-oy);
+}
+
+.ana-chamber {
+	position: absolute;
+	inset: 0;
+	transform-style: preserve-3d;
+	transform: translateZ(var(--ana-cz));
+	will-change: transform;
+}
+
+.ana-wall {
+	position: absolute;
+	background: var(--ana-wall-near);
+}
+
+/* Back wall sits one room-depth away; the four sides hinge off the
+   viewport edges, so the box always exactly fills the opening. */
+.ana-back {
+	inset: 0;
+	transform: translateZ(calc(var(--ana-room) * -1));
+	background: radial-gradient(
+		120% 90% at 50% 45%,
+		var(--ana-wall-back) 0%,
+		var(--ana-wall-far) 42%,
+		var(--ana-wall-near) 100%
+	);
+}
+.ana-left {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: var(--ana-room);
+	transform-origin: left center;
+	transform: rotateY(90deg);
+	background: linear-gradient(to right, var(--ana-wall-near) 0%, var(--ana-wall-far) 100%);
+}
+.ana-right {
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: var(--ana-room);
+	transform-origin: right center;
+	transform: rotateY(-90deg);
+	background: linear-gradient(to left, var(--ana-wall-near) 0%, var(--ana-wall-far) 100%);
+}
+.ana-top {
+	left: 0;
+	right: 0;
+	top: 0;
+	height: var(--ana-room);
+	transform-origin: center top;
+	transform: rotateX(-90deg);
+	background: linear-gradient(to bottom, var(--ana-wall-near) 0%, var(--ana-wall-far) 100%);
+}
+.ana-bottom {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: var(--ana-room);
+	transform-origin: center bottom;
+	transform: rotateX(90deg);
+	background: linear-gradient(to top, var(--ana-wall-near) 0%, var(--ana-wall-far) 100%);
+}
+
+/* One grid, 64px, anchored at the edge of each wall that touches the
+   screen plane — that is what makes the lines meet in the corners. */
+.ana-grid {
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(to right, var(--ana-line) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--ana-line) 1px, transparent 1px);
+	background-size: var(--ana-cell) var(--ana-cell);
+}
+
+/* Scrolling walks you down the room, so the horizontal lines travel with
+   you. The depth lines are unaffected — sliding along themselves. */
+.ana-back .ana-grid,
+.ana-left .ana-grid {
+	background-position: 0 calc(var(--ana-scroll) * -0.07);
+}
+.ana-right .ana-grid {
+	background-position: right calc(var(--ana-scroll) * -0.07);
+}
+.ana-top .ana-grid {
+	background-position: 0 0;
+}
+.ana-bottom .ana-grid {
+	background-position: 0 bottom;
+}
+
+.ana-back .ana-grid {
+	opacity: 0.5;
+	-webkit-mask-image: radial-gradient(80% 72% at 50% 50%, #000 28%, transparent 90%);
+	mask-image: radial-gradient(80% 72% at 50% 50%, #000 28%, transparent 90%);
+}
+.ana-left .ana-grid {
+	opacity: 0.42;
+	-webkit-mask-image: linear-gradient(to right, transparent 0%, #000 38%);
+	mask-image: linear-gradient(to right, transparent 0%, #000 38%);
+}
+.ana-right .ana-grid {
+	opacity: 0.42;
+	-webkit-mask-image: linear-gradient(to left, transparent 0%, #000 38%);
+	mask-image: linear-gradient(to left, transparent 0%, #000 38%);
+}
+.ana-top .ana-grid {
+	opacity: 0.34;
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 38%);
+	mask-image: linear-gradient(to bottom, transparent 0%, #000 38%);
+}
+.ana-bottom .ana-grid {
+	opacity: 0.38;
+	-webkit-mask-image: linear-gradient(to top, transparent 0%, #000 38%);
+	mask-image: linear-gradient(to top, transparent 0%, #000 38%);
+}
+
+/* A soft pool of light on the back wall, so the box has a middle */
+.ana-cast {
+	position: absolute;
+	left: 50%;
+	top: 52%;
+	width: 52vmin;
+	height: 34vmin;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	background: radial-gradient(closest-side, var(--ana-glow), transparent 72%);
+	filter: blur(22px);
+}
+
+.ana-motes {
+	position: absolute;
+	inset: 0;
+	transform-style: preserve-3d;
+	pointer-events: none;
+}
+.ana-motes b {
+	position: absolute;
+	border-radius: 50%;
+	background: var(--ana-dust);
+	opacity: 0.12;
+	animation: ana-drift 18s ease-in-out infinite;
+}
+@keyframes ana-drift {
+	0%,
+	100% {
+		opacity: 0.08;
+	}
+	50% {
+		opacity: 0.42;
+	}
+}
+
+/* ── the glass, welded to the screen ─────────────────────────────── */
+
+.ana-glass {
+	position: fixed;
+	inset: 0;
+	z-index: 9990;
+	pointer-events: none;
+	opacity: var(--ana-mix);
+}
+.ana-bezel {
+	position: absolute;
+	inset: 0;
+	box-shadow:
+		inset 0 0 0 1px var(--ana-bezel-edge),
+		inset 0 0 90px 24px var(--ana-bezel),
+		inset 0 0 220px 70px var(--ana-bezel);
+}
+/* the sheen catches the light from whichever way you are facing */
+.ana-sheen {
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(
+		58% 44% at var(--ana-sx) var(--ana-sy),
+		var(--ana-sheen),
+		transparent 72%
+	);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+	.ana-motes b {
+		animation: none;
+		opacity: 0.16;
+	}
+}

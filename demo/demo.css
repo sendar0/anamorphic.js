@@ -1,0 +1,568 @@
+/* The demo's own styling. Nothing here is part of the library — it is here
+   so the page has something to look at, and so the room has a palette to
+   sit in. The library's own tokens are overridden at the bottom. */
+
+:root {
+	--ink: #e8edf2;
+	--ink-dim: #9aa7b4;
+	--ink-faint: #61707e;
+	--paper: #0b0f14;
+	--paper-1: #10161d;
+	--paper-2: #161f28;
+	--edge: #22303c;
+	--accent: #7cf0a3;
+	--accent-2: #8ecaff;
+	--mono: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+	--sans: system-ui, -apple-system, 'Inter', sans-serif;
+	color-scheme: dark;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	background: var(--paper);
+	color: var(--ink);
+	font-family: var(--mono);
+	font-size: 15px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+}
+
+main {
+	width: min(64rem, 100% - 2.5rem);
+	margin-inline: auto;
+	padding-block: clamp(2rem, 7vw, 5rem);
+	display: flex;
+	flex-direction: column;
+	gap: clamp(2.5rem, 7vw, 5rem);
+}
+
+/* ── hero ─────────────────────────────────────────────────────────────── */
+
+.eyebrow {
+	font-size: 0.78rem;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--ink-faint);
+	margin: 0 0 0.6rem;
+}
+.eyebrow::before {
+	content: '// ';
+	color: var(--accent);
+}
+
+h1 {
+	font-family: var(--sans);
+	font-size: clamp(2.1rem, 6vw, 3.6rem);
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.05;
+	margin: 0 0 0.7rem;
+}
+
+.lede {
+	font-family: var(--sans);
+	font-size: clamp(1rem, 1.3vw, 1.14rem);
+	color: var(--ink-dim);
+	max-width: 62ch;
+	margin: 0 0 1.8rem;
+}
+
+.wild {
+	font-family: var(--sans);
+	font-size: 0.95rem;
+	color: var(--ink-dim);
+	max-width: 62ch;
+	margin: 0 0 1.8rem;
+	padding: 0.7rem 0.95rem;
+	border: 1px solid var(--edge);
+	border-left: 2px solid var(--accent);
+	border-radius: 0 8px 8px 0;
+	background: color-mix(in srgb, var(--paper-1) 70%, transparent);
+}
+.wild b {
+	font-family: var(--mono);
+	font-size: 0.9em;
+	font-weight: 500;
+	color: var(--ink);
+}
+
+a {
+	color: var(--accent-2);
+	text-decoration-color: color-mix(in srgb, var(--accent-2) 45%, transparent);
+	text-underline-offset: 0.2em;
+}
+a:hover {
+	text-decoration-color: currentColor;
+}
+a:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+h2 {
+	font-family: var(--sans);
+	font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	margin: 0 0 0.8rem;
+}
+
+h3 {
+	font-family: var(--mono);
+	font-size: 0.82rem;
+	font-weight: 500;
+	color: var(--ink-dim);
+	letter-spacing: 0.05em;
+	margin: 1.5rem 0 0.5rem;
+}
+
+.prose {
+	font-family: var(--sans);
+	color: var(--ink-dim);
+	max-width: 64ch;
+	margin: 0 0 0.9rem;
+}
+.prose.small {
+	font-size: 0.88rem;
+	margin-top: 1rem;
+}
+.prose em {
+	color: var(--accent-2);
+	font-style: italic;
+}
+
+code {
+	font-family: var(--mono);
+	font-size: 0.9em;
+	color: #f7c873;
+}
+
+/* ── the controls panel ───────────────────────────────────────────────── */
+
+.panel {
+	max-width: 44rem;
+	background: color-mix(in srgb, var(--paper-1) 88%, transparent);
+	border: 1px solid var(--edge);
+	border-radius: 10px;
+	overflow: hidden;
+}
+.panel-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.55rem 0.9rem;
+	border-bottom: 1px solid var(--edge);
+	background: color-mix(in srgb, var(--paper-2) 70%, transparent);
+	font-size: 0.8rem;
+	color: var(--ink-dim);
+}
+.state {
+	font-size: 0.68rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--ink-faint);
+}
+.state.on {
+	color: var(--accent);
+}
+.panel-body {
+	padding: 0.9rem;
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+button {
+	font-family: var(--mono);
+	font-size: 0.78rem;
+	color: var(--ink-dim);
+	background: transparent;
+	border: 1px solid var(--edge);
+	border-radius: 6px;
+	padding: 0.4rem 0.75rem;
+	cursor: pointer;
+	transition:
+		border-color 180ms ease,
+		color 180ms ease;
+}
+button:hover:not(:disabled) {
+	color: var(--ink);
+	border-color: var(--accent);
+}
+button.go {
+	color: var(--accent);
+	border-color: var(--accent);
+}
+button:disabled {
+	opacity: 0.38;
+	cursor: default;
+}
+button:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.gain {
+	display: grid;
+	gap: 0.3rem;
+	margin: 0.9rem 0 0.7rem;
+	max-width: 22rem;
+	font-size: 0.72rem;
+	letter-spacing: 0.05em;
+	color: var(--ink-faint);
+}
+.gain b {
+	color: var(--ink-dim);
+	font-weight: 400;
+}
+.gain input {
+	width: 100%;
+	accent-color: var(--accent);
+}
+
+.live {
+	display: flex;
+	align-items: center;
+	gap: 0.9rem;
+	flex-wrap: wrap;
+}
+#preview {
+	width: 128px;
+	height: auto;
+	transform: scaleX(-1);
+	border: 1px solid var(--edge);
+	border-radius: 6px;
+	background: var(--paper);
+}
+.readout {
+	font-size: 0.74rem;
+	color: var(--ink-faint);
+	margin: 0;
+}
+.readout b {
+	font-weight: 400;
+	color: var(--ink-dim);
+}
+.problem {
+	font-size: 0.76rem;
+	color: #ff8a8a;
+	margin: 0.7rem 0 0;
+	max-width: 56ch;
+}
+
+/* ── the skull ────────────────────────────────────────────────────────── */
+
+/* --sk-d is how wrong the viewpoint is: 1 sitting square in front, 0 at the
+   one place the drawing was made for, and up to 1.7 leaning the wrong way.
+   Everything below is a function of it, so the whole thing is one number. */
+.skull {
+	--sk-d: 1;
+	margin: 0;
+	max-width: 40rem;
+}
+
+.skull-frame {
+	display: grid;
+	place-items: center;
+	height: 300px;
+	padding: 1rem;
+	border: 1px dashed var(--edge);
+	border-radius: 10px;
+	background:
+		radial-gradient(120% 90% at 50% 120%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%),
+		color-mix(in srgb, var(--paper-1) 60%, transparent);
+	overflow: hidden;
+}
+
+/* The stroke is deliberately allowed to smear with the shape — in a real
+   anamorphosis the paint stretches too, it is not a shape with a clean
+   outline drawn over it. */
+/* The pre-distortion is the inverse of what the drawing's own plane does to
+   it when seen from off to the side, so the wedge runs the opposite way to
+   the view: the resolving eye is off to the left, the left end of the mark
+   is the end nearest it, and near things already look big — so that is the
+   end that has to be painted small. Hence the negative angle. Rotate through
+   it, project through a short perspective, then scale the width back up by
+   1/cos so the mark ends up long rather than merely squashed. At --sk-d: 0
+   the angle is zero and the whole chain collapses to the identity. */
+.skull-warp {
+	--sk-a: calc(var(--sk-d) * -58deg);
+	transform: translate(calc(var(--sk-d) * -4%), calc(var(--sk-d) * 3%))
+		rotate(calc(var(--sk-d) * 7deg))
+		scale(calc((1 + var(--sk-d) * 2.9) / cos(var(--sk-a))), calc(1 - var(--sk-d) * 0.54))
+		perspective(260px) rotateY(var(--sk-a));
+	transform-origin: 50% 76%;
+	opacity: calc(0.34 + (1 - min(var(--sk-d), 1)) * 0.66);
+	will-change: transform;
+}
+.skull-warp svg {
+	display: block;
+	width: 150px;
+	height: auto;
+	color: var(--ink-dim);
+	transition: color 200ms ease;
+}
+.skull.is-resolved .skull-warp svg {
+	color: var(--accent);
+}
+
+.sk-bone {
+	fill: color-mix(in srgb, var(--paper-2) 80%, transparent);
+	stroke: currentColor;
+	stroke-width: 3;
+	stroke-linejoin: round;
+}
+.sk-hollow {
+	fill: var(--paper);
+	stroke: currentColor;
+	stroke-width: 2.5;
+	stroke-linejoin: round;
+}
+.sk-line {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	opacity: 0.75;
+}
+
+.skull figcaption {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+	margin-top: 0.7rem;
+	font-size: 0.74rem;
+	color: var(--ink-faint);
+}
+.skull-bar {
+	flex: none;
+	width: 88px;
+	height: 3px;
+	border-radius: 2px;
+	background: var(--edge);
+	overflow: hidden;
+}
+.skull-bar i {
+	display: block;
+	width: 0%;
+	height: 100%;
+	background: var(--accent);
+	transition: width 90ms linear;
+}
+.skull.is-resolved .skull-hint {
+	color: var(--accent);
+}
+
+/* ── the plane ladder ─────────────────────────────────────────────────── */
+
+.ladder {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.5rem;
+	border: 1px dashed var(--edge);
+	border-radius: 10px;
+	max-width: 36rem;
+}
+.plate {
+	display: flex;
+	align-items: baseline;
+	gap: 0.7rem;
+	padding: 0.6rem 0.9rem;
+	background: color-mix(in srgb, var(--paper-2) 92%, transparent);
+	border: 1px solid var(--edge);
+	border-radius: 6px;
+	font-size: 0.82rem;
+}
+.plate code {
+	color: var(--accent);
+	font-weight: 600;
+}
+.plate .z {
+	color: var(--ink-faint);
+	font-size: 0.75rem;
+}
+.plate .note {
+	color: var(--ink-dim);
+	font-size: 0.75rem;
+	margin-left: auto;
+}
+
+/* ── code and lists ───────────────────────────────────────────────────── */
+
+.two {
+	display: grid;
+	grid-template-columns: 1.15fr 1fr;
+	gap: 1.5rem;
+	align-items: start;
+}
+@media (max-width: 860px) {
+	.two {
+		grid-template-columns: 1fr;
+	}
+}
+
+.code {
+	margin: 0;
+	padding: 0.9rem 1rem;
+	background: var(--paper-1);
+	border: 1px solid var(--edge);
+	border-radius: 8px;
+	font-family: var(--mono);
+	font-size: 0.78rem;
+	line-height: 1.6;
+	color: var(--ink-dim);
+	overflow-x: auto;
+	white-space: pre;
+}
+
+/* Token colours for demo/highlight.ts. Five hues, borrowed from the palette
+   the rest of the page already uses, so the samples do not turn into a
+   fruit salad next to the prose. */
+.t-com {
+	color: #566472;
+}
+.t-str {
+	color: #f7c873;
+}
+.t-key {
+	color: #c3a6ff;
+}
+.t-num {
+	color: #f2a97e;
+}
+.t-fn,
+.t-tag,
+.t-sel {
+	color: var(--accent);
+}
+.t-prop,
+.t-attr {
+	color: var(--accent-2);
+}
+.t-op,
+.t-punc {
+	color: #78889a;
+}
+
+.facts {
+	display: grid;
+	gap: 0.6rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	max-width: 64ch;
+	font-family: var(--sans);
+	color: var(--ink-dim);
+}
+.facts b {
+	color: var(--ink);
+	font-weight: 600;
+}
+
+/* ── the plug ─────────────────────────────────────────────────────────── */
+
+.plug {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.25rem;
+	font-family: var(--sans);
+	color: var(--ink-dim);
+	max-width: 44rem;
+	padding: 1.25rem 1.4rem;
+	border: 1px solid var(--edge);
+	border-radius: 10px;
+	background: color-mix(in srgb, var(--paper-1) 88%, transparent);
+}
+.plug-mark {
+	flex: none;
+	width: 88px;
+	height: auto;
+	border-radius: 8px;
+}
+.plug p {
+	margin: 0;
+	max-width: 54ch;
+}
+.plug p.plug-lead {
+	font-family: var(--mono);
+	font-size: 0.72rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--ink-faint);
+	margin-bottom: 0.35rem;
+}
+.plug p.plug-title {
+	font-size: 1.05rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	color: var(--ink);
+	margin-bottom: 0.55rem;
+}
+.plug p.plug-cta {
+	margin-top: 0.9rem;
+}
+.plug-cta a {
+	display: inline-block;
+	font-family: var(--mono);
+	font-size: 0.8rem;
+	color: var(--accent);
+	text-decoration: none;
+	border: 1px solid var(--accent);
+	border-radius: 6px;
+	padding: 0.45rem 0.85rem;
+	transition:
+		background-color 180ms ease,
+		color 180ms ease;
+}
+.plug-cta a:hover {
+	background: color-mix(in srgb, var(--accent) 14%, transparent);
+	color: var(--ink);
+}
+
+@media (max-width: 560px) {
+	.plug {
+		flex-direction: column;
+		gap: 0.9rem;
+	}
+	.plug-mark {
+		width: 64px;
+	}
+}
+
+.foot {
+	display: flex;
+	gap: 0.6rem;
+	font-size: 0.76rem;
+	color: var(--ink-faint);
+	border-top: 1px solid var(--edge);
+	padding-top: 1.2rem;
+}
+.sep {
+	opacity: 0.5;
+}
+
+/* ── the room, in this demo's palette ─────────────────────────────────── */
+
+:root {
+	--ana-wall-near: var(--paper);
+	--ana-wall-far: var(--paper-2);
+	--ana-wall-back: #1e2b36;
+	--ana-line: color-mix(in srgb, var(--accent) 42%, transparent);
+	--ana-dust: var(--ink);
+	--ana-glow: color-mix(in srgb, var(--accent) 16%, transparent);
+}
